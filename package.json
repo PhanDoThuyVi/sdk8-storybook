@@ -1,0 +1,63 @@
+{
+  "name": "7.2.0-storybook",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@gooddata/catalog-export": "^8.0.0-alpha.99",
+    "@gooddata/gd-bear-client": "^8.0.0-alpha.99",
+    "@gooddata/gd-bear-model": "^8.0.0-alpha.99",
+    "@gooddata/goodstrap": "^68.4.0",
+    "@gooddata/sdk-backend-bear": "^8.0.0-alpha.99",
+    "@gooddata/sdk-backend-spi": "^8.0.0-alpha.99",
+    "@gooddata/sdk-model": "^8.0.0-alpha.99",
+    "@gooddata/sdk-ui": "^8.0.0-alpha.99",
+    "@gooddata/sdk-ui-charts": "8.0.0-alpha.99",
+    "@gooddata/sdk-ui-ext": "8.0.0-alpha.99",
+    "@gooddata/sdk-ui-filters": "8.0.0-alpha.99",
+    "@gooddata/sdk-ui-geo": "8.0.0-alpha.99",
+    "@gooddata/sdk-ui-pivot": "8.0.0-alpha.99",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "moment": "^2.24.0",
+    "node-sass": "^4.12.0",
+    "query-string": "^5.1.1","react-dom": "^16.8.6",
+    "react-scripts": "3.0.1",
+    "react-select": "1.2.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 3000 --https --ssl-cert ./certificate/localhost.crt --ssl-key ./certificate/localhost.key",
+    "build-storybook": "build-storybook -s public"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 2 ie version",
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^5.1.9",
+    "@storybook/addon-links": "^5.1.9",
+    "@storybook/addon-options": "^5.1.9",
+    "@storybook/addons": "^5.1.9",
+    "@storybook/react": "^5.1.9",
+    "babel-core": "^6.26.3",
+    "http-proxy-middleware": "^0.19.1"
+  }
+}
