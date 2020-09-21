@@ -3,17 +3,24 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import '@gooddata/sdk-ui-charts/styles/css/main.css'; 
 import '@gooddata/sdk-ui-pivot/styles/css/main.css';
-import { Headline, PivotTable, ColumnChart, BarChart, LineChart, AreaChart, HeaderPredicateFactory, PieChart, DonutChart, Treemap, Heatmap, ComboChart, ScatterPlot, BubbleChart } from '@gooddata/sdk-ui-charts';
+import { Headline, ColumnChart, BarChart, LineChart, AreaChart, PieChart, DonutChart, Treemap, Heatmap, ComboChart, ScatterPlot, BubbleChart } from '@gooddata/sdk-ui-charts';
+import {PivotTable} from '@gooddata/sdk-ui-pivot';
 import { InsightView } from '@gooddata/sdk-ui-ext';
 import { BackendProvider } from "@gooddata/sdk-ui";
 import { WorkspaceProvider } from "@gooddata/sdk-ui";
 import bearFactory, { ContextDeferredAuthProvider } from "@gooddata/sdk-backend-bear";
 import { projectId as workspace } from "../src/constants";
 import {Ldm, LdmExt} from "../src/ldm"
+import { HeaderPredicates } from '@gooddata/sdk-ui';
 
 const backend = bearFactory().withAuthentication(new ContextDeferredAuthProvider());
 const DOWNLOADER_ID = 'downloader';
 let exportResult: any;
+
+function onDrillHandler(data){
+    console.log(data.executionContext); 
+    console.log(data.drillContext);
+}
 
 function onExportReady(execution: any) {
    exportResult = execution;
@@ -33,7 +40,9 @@ const WRAPPER_STYLE = { width: 1200, height: 400 };
 storiesOf('Filter by value measure', module)
    .add('Pivot Table', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount less than 5000000</h1>
          <PivotTable
             measures={[Ldm.m_Amount]}
             rows={[Ldm.a_StageName]}
@@ -64,7 +73,7 @@ storiesOf('Filter by value measure', module)
          />
          <h1>Pivot has sub-total and sort attribute Product
             Amount less than 1000000, drill Amount, export to xlsx</h1>
-         {/* <button onClick={() => doExport()}>Export</button> */}
+         <button onClick={() => doExport()}>Export</button>
          <PivotTable
             measures={[Ldm.m_Amount]}
             rows={[Ldm.a_Product, Ldm.a_StageName]}
@@ -72,28 +81,32 @@ storiesOf('Filter by value measure', module)
             totals={[LdmExt.t_totalsPivotTable]}
             sortBy={[LdmExt.s_sortonProductDesc]}
             filters={[LdmExt.filterAmount_LessThan]}
-            // drillableItems={[
-            //    HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
-            // onExportReady={onExportReady}
+            drillableItems={[
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
+            ]}
+            onDrill={onDrillHandler}
+            onExportReady={onExportReady}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Column Chart', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000, drill Amount, export to xlsx</h1>
-         {/* <button onClick={doExport}>Export</button> */}
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount less than 5000000, drill Amount, export to xlsx</h1>
+         <button onClick={doExport}>Export</button>
          <ColumnChart
             measures={[Ldm.m_Amount]}
             viewBy={[Ldm.a_StageName]}
             stackBy={Ldm.a_Product}
             filters={[LdmExt.filterAmount_GreaterThan]}
-            // drillableItems={[
-            //    HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
-            // onExportReady={onExportReady}
+            drillableItems={[
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
+            ]}
+            onDrill={onDrillHandler}
+            onExportReady={onExportReady}
          />
          <h1>AM - Change_ClosedBOP_SnapshotBOP = -100%, stack to %</h1>
          <ColumnChart
@@ -105,11 +118,15 @@ storiesOf('Filter by value measure', module)
                stackMeasuresToPercent: true
             }}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Bar Chart', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount greater than 5000000, drill Amount, export to xlsx</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount greater than 5000000, drill Amount, export to xlsx</h1>
          <button onClick={doExport}>Export</button>
          <BarChart
             measures={[Ldm.m_Amount]}
@@ -117,9 +134,9 @@ storiesOf('Filter by value measure', module)
             stackBy={Ldm.a_Product}
             filters={[LdmExt.filterAmount_GreaterThan]}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
             onExportReady={onExportReady}
          />
          <h1>AM - Change_ClosedBOP_SnapshotBOP = -100%, stack to %</h1>
@@ -132,11 +149,15 @@ storiesOf('Filter by value measure', module)
                stackMeasuresToPercent: true
             }}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Line Chart', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000, drill Amount, export to xlsx</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount>5000000, drill Amount, export to xlsx</h1>
          <button onClick={doExport}>Export</button>
          <LineChart
             measures={[Ldm.m_Amount]}
@@ -149,9 +170,9 @@ storiesOf('Filter by value measure', module)
                },
             }}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
             onExportReady={onExportReady}
          />
          <h1>AM - Change_ClosedBOP_SnapshotBOP = -100%, stack to %</h1>
@@ -167,11 +188,15 @@ storiesOf('Filter by value measure', module)
                stackMeasuresToPercent: true
             }}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Area Chart', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000, drill Amount, export to xlsx</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount>5000000, drill Amount, export to xlsx</h1>
          <button onClick={doExport}>Export</button>
          <AreaChart
             measures={[Ldm.m_Amount]}
@@ -184,9 +209,9 @@ storiesOf('Filter by value measure', module)
                },
             }}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
             onExportReady={onExportReady}
          />
          <h1>AM - Change_ClosedBOP_SnapshotBOP = -100%, stack to %</h1>
@@ -202,11 +227,15 @@ storiesOf('Filter by value measure', module)
                stackMeasuresToPercent: true
             }}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Combo Chart', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000, drill Amount, export to xlsx</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount>5000000, drill Amount, export to xlsx</h1>
          <button onClick={doExport}>Export</button>
          <ComboChart
             primaryMeasures={[Ldm.m_Amount]}
@@ -214,9 +243,9 @@ storiesOf('Filter by value measure', module)
             viewBy={[Ldm.a_StageName]}
             filters={[LdmExt.filterAmount_GreaterThan]}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
             onExportReady={onExportReady}
          />
          <h1>AM - Change_ClosedBOP_SnapshotBOP = -100%, stack to %</h1>
@@ -230,11 +259,15 @@ storiesOf('Filter by value measure', module)
                stackMeasuresToPercent: true
             }}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Scatter Plot/Bubble Chart', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000, drill Amount, export to xlsx</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount>5000000, drill Amount, export to xlsx</h1>
          <button onClick={doExport}>Export</button>
          <ScatterPlot
             xAxisMeasure={Ldm.m_Amount}
@@ -247,9 +280,9 @@ storiesOf('Filter by value measure', module)
             }}
             filters={[LdmExt.filterAmount_GreaterThan]}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
             onExportReady={onExportReady}
          />
          <h1>Ratio, Amount>5000000, stack to %</h1>
@@ -266,11 +299,15 @@ storiesOf('Filter by value measure', module)
                stackMeasuresToPercent: true
             }}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Pie/Donut Chart', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000, drill Amount, export to xlsx</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount>5000000, drill Amount, export to xlsx</h1>
          <button onClick={doExport}>Export</button>
          <PieChart
             measures={[Ldm.m_Amount]}
@@ -282,9 +319,9 @@ storiesOf('Filter by value measure', module)
                }
             }}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
             onExportReady={onExportReady}
          />
          <h1>Ratio, Amount>5000000, drill Amount, stack to %</h1>
@@ -300,15 +337,19 @@ storiesOf('Filter by value measure', module)
                stackMeasuresToPercent: true
             }}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Treemap/Heatmap', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Amount>5000000, drill Amount, export to xlsx</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Amount>5000000, drill Amount, export to xlsx</h1>
          <button onClick={doExport}>Export</button>
          <Treemap
             measures={[Ldm.m_Amount]}
@@ -316,9 +357,9 @@ storiesOf('Filter by value measure', module)
             segmentBy={Ldm.a_Product}
             filters={[LdmExt.filterAmount_GreaterThan]}
             drillableItems={[
-               HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1279`)
+               HeaderPredicates.uriMatch(LdmExt.AmountUri)
             ]}
-            onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
             onExportReady={onExportReady}
          />
          <h1>AM - Filter positive attribute, Change_ClosedBOP_SnapshotBOP = -100%
@@ -337,11 +378,15 @@ storiesOf('Filter by value measure', module)
             }}
             filters={[LdmExt.filterAmountRatio_GreaterThan]}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
    .add('Special Insights', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>No data</h1>
+         <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                  <h1>No data</h1>
          <ColumnChart
             measures={[Ldm.m_Amount]}
             viewBy={[Ldm.a_StageName]}
@@ -449,13 +494,17 @@ storiesOf('Filter by value measure', module)
             viewBy={[Ldm.a_Product]}
             filters={[LdmExt.filterAmountRatio_GreaterThan]}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
-   .add('Visualization ', () => (
+   .add('InsightView ', () => (
       <div style={WRAPPER_STYLE}>
-         <h1>Normal measure, Ad-hoc Fact, Ad-hoc Attribute</h1>
+      <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                   <h1>Normal measure, Ad-hoc Fact, Ad-hoc Attribute</h1>
          <h1>ATT-Date Filter, Min Amount > -400000</h1>
-         <Visualization
+         <InsightView
             identifier="aagWYcrFdD5S"
             filters={[
                {
@@ -474,7 +523,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Attribute Filter, _Close [BOP] = 40659</h1>
-         <Visualization
+         <InsightView
             identifier="aaeWYp5of4AP"
             filters={[
                {
@@ -493,7 +542,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Combine with local filters, Count of Opp. Snapshot, Snapshot between 3000 and 15000</h1>
-         <Visualization
+         <InsightView
             identifier="aabWY3v3f91C"
             filters={[
                {
@@ -513,7 +562,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>only measure value filter, Median Amount less than or = 12000</h1>
-         <Visualization
+         <InsightView
             identifier="aahWYp5of4AP"
             filters={[
                {
@@ -532,7 +581,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Combine all filters, Avg Amount less than 60000</h1>
-         <Visualization
+         <InsightView
             identifier="aabXOST3fFdR"
             filters={[
                {
@@ -552,7 +601,7 @@ storiesOf('Filter by value measure', module)
          />
          <h1>Derived SPLY/PP</h1>
          <h1>Combine all filters, Amount Negative-period ago != 96000</h1>
-         <Visualization
+         <InsightView
             identifier="aabYfa1ka3dM"
             filters={[
                {
@@ -571,7 +620,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Combine all filters, Amount[BOP]-SP year ago >= 2000000</h1>
-         <Visualization
+         <InsightView
             identifier="aadYfa1ka3dM"
             filters={[
                {
@@ -591,7 +640,7 @@ storiesOf('Filter by value measure', module)
          />
          <h1>AM/derive AM</h1>
          <h1>Combine all filters, Difference of Avg Amount >=0 -> check data show 2010,2013</h1>
-         <Visualization
+         <InsightView
             identifier="aabYinzuhoJY"
             filters={[
                {
@@ -610,7 +659,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Combine all filters, Change-PP between -0.1 and 2 -> check data show 2011,2013</h1>
-         <Visualization
+         <InsightView
             identifier="aagYhsAShoCJ"
             filters={[
                {
@@ -631,7 +680,7 @@ storiesOf('Filter by value measure', module)
          />
          <h1>Combine all filters, Ratio of… -SP year ago not between 0.5 and 1
                         -> check data show 2011,2012</h1>
-         <Visualization
+         <InsightView
             identifier="aadYibo5hoGm"
             filters={[
                {
@@ -651,7 +700,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Ratio - Combine all filters</h1>
-         <Visualization
+         <InsightView
             identifier="aad2RgVtdKFY"
             filters={[
                {
@@ -670,7 +719,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Format in % - Combine all filters, Amount[BOP]>=1000000</h1>
-         <Visualization
+         <InsightView
             identifier="adm3s7hoa6Uk"
             filters={[
                {
@@ -689,7 +738,7 @@ storiesOf('Filter by value measure', module)
             ]}
          />
          <h1>Stack to % - Combine all filters</h1>
-         <Visualization
+         <InsightView
             identifier="aak3KyV3dDev"
             filters={[
                {
@@ -707,7 +756,9 @@ storiesOf('Filter by value measure', module)
                }
             ]}
          />
-      </div>
+      </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
    ))
 
    ;

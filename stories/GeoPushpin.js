@@ -9,39 +9,32 @@ import { WorkspaceProvider } from "@gooddata/sdk-ui";
 import bearFactory, { ContextDeferredAuthProvider } from "@gooddata/sdk-backend-bear";
 import { projectId as workspace } from "../src/constants";
 import {Ldm, LdmExt} from "../src/ldm";
-//import { HeaderPredicates, IDrillEvent } from "@gooddata/sdk-ui";
-//import { useState } from '@storybook/addons';
-//import { attributeIdentifier, measureIdentifier } from "@gooddata/sdk-model";
+import { HeaderPredicates } from "@gooddata/sdk-ui";
 
 const backend = bearFactory().withAuthentication(new ContextDeferredAuthProvider());
 const WRAPPER_STYLE = { width: 1200, height: 400 };
 
-// const drillableItems = [
-//     HeaderPredicates.identifierMatch(attributeIdentifier(Ldm.Location0.State)!),
-//     HeaderPredicates.identifierMatch(attributeIdentifier(Ldm.Location0.LatlonName)!),
-//     HeaderPredicates.identifierMatch(measureIdentifier(Ldm.PopulationSum)!)
-// ];
+function onDrillHandler(data){
+    console.log(data.executionContext); 
+    console.log(data.drillContext);
+}
 
-// const style = { height: 500 };
+const style = { height: 500 };
+let exportResult: any;
 
-// const GeoChart: React.FC = () => {
-//     const [drillEvent, setState] = useState<IDrillEvent>();
+function onExportReady(execution: any){
+	exportResult = execution;
+}
 
-//     const onDrill = (drillEvent: IDrillEvent) => {
-//         setState(drillEvent);
-//     };
+async function doExport() {
+    const result = await exportResult({
+        format: 'xlsx',
+        includeFilterContext: true,
+        mergeHeaders: true
+    });
+    window.open(result.uri);
+}
 
-//     let renderDrillValue;
-//     if (drillEvent) {
-//         const drillColumn = drillEvent.drillContext.row![drillEvent.drillContext.columnIndex!];
-//         const drillValue = typeof drillColumn === "object" ? drillColumn.name : drillColumn;
-//         renderDrillValue = (
-//             <h3>
-//                 You have Clicked <span className="s-drill-value">{drillValue}</span>
-//             </h3>
-//         );
-//     }
-// };
 storiesOf('Geo Pushpin', module)
     .add('Basic cases', () => (
         <div style={WRAPPER_STYLE}>
@@ -317,10 +310,6 @@ storiesOf('Geo Pushpin', module)
                             minSize: "0.5x",
                             maxSize: "1.5x"
                         }, mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext);}}
                     />
                 </div>
                 <h1>Derive measure - POP</h1>
@@ -336,10 +325,6 @@ storiesOf('Geo Pushpin', module)
                             minSize: "0.5x",
                             maxSize: "1.5x"
                         },  mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/514`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext);}}
                     />
                 </div>
                 <h1>Derive measure - PP</h1>
@@ -525,56 +510,53 @@ storiesOf('Geo Pushpin', module)
                                 maxSize: "1.5x"
                             },  mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg"
                         }}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77082`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
                 </div>
                 </WorkspaceProvider>  
                 </BackendProvider>
             </div>
         ))
-        // .add('Drill', () => (
-        //     <div style={WRAPPER_STYLE}>
-        //         <h1>Drill into measure size/color</h1>
-        //         <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
-        //             <GeoPushpinChart
-        //                 projectId={Ldm.projectId}
-        //                 location={Ldm.Location0.LatlonName}
-        //                 size={Ldm.PopulationSum}
-        //                 color={Ldm.PopulationMin}
-        //                 segmentBy={Ldm.Location0.State}
-        //                 drillableItems={[
-        //                     //HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77185`),
-        //                     HeaderPredicateFactory.localinsightMatch(`SumPopulation`)
-        //                 ]}
-        //                 onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
-        //                 config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-        //             />
-        //         </div>
-        //         <h1>Drill into Location/Segment By</h1>
-        //         <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
-        //             <GeoPushpinChart
-        //                 projectId={Ldm.projectId}
-        //                 location={Ldm.Location0.LatlonName}
-        //                 size={Ldm.PopulationSum}
-        //                 color={Ldm.PopulationMin}
-        //                 segmentBy={Ldm.Location0.State}
-        //                 drillableItems={[
-        //                     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77094`)
-        //                 ]}
-        //                 onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
-        //                 config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-        //             />
-        //         </div>
-        //     </div>
-        // ))
+        .add('Drill', () => (
+            <div style={WRAPPER_STYLE}>
+                <BackendProvider backend={backend}>
+                <WorkspaceProvider workspace={workspace}>
+                <h1>Drill into measure size/color</h1>
+                <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
+                    <GeoPushpinChart
+                        location={Ldm.Location0.LatlonName}
+                        size={Ldm.PopulationSum}
+                        color={Ldm.PopulationMin}
+                        segmentBy={Ldm.Location0.State}
+                        drillableItems={[
+                            HeaderPredicates.uriMatch(LdmExt.PopulationSumUri)
+                        ]}
+                        onDrill={onDrillHandler}
+                        config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
+                    />
+                </div>
+                <h1>Drill into Location/Segment By</h1>
+                <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
+                    <GeoPushpinChart
+                        location={Ldm.Location0.LatlonName}
+                        size={Ldm.PopulationSum}
+                        color={Ldm.PopulationMin}
+                        segmentBy={Ldm.Location0.State}
+                        drillableItems={[
+                            HeaderPredicates.uriMatch(LdmExt.StateUri)
+                        ]}
+                        onDrill={onDrillHandler}
+                        config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
+                    />
+                </div>
+                </WorkspaceProvider>  
+                </BackendProvider>
+                </div>
+        ))
         .add('Export', () => (
             <div style={WRAPPER_STYLE}>
                 <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
-                {/* <h1>Export geo pushpin to csv</h1>
+                <WorkspaceProvider workspace={workspace}>
+                <h1>Export geo pushpin to csv</h1>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
                     <GeoPushpinChart
                         location={Ldm.Location0.LatlonName}
@@ -586,7 +568,7 @@ storiesOf('Geo Pushpin', module)
                             minSize: "0.5x",
                             maxSize: "1.5x"
                         },mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-                        onExportReady={onExportReady}
+                        onExportReady = {onExportReady}
                     />
                     <button  style={{position:"relative", padding: "15px 32px" }} onClick={doExport}>Export</button>
                 </div>
@@ -603,10 +585,10 @@ storiesOf('Geo Pushpin', module)
                             minSize: "0.5x",
                             maxSize: "1.5x"
                         },mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-                        onExportReady={onExportReady}
+                        onExportReady = {onExportReady}
                     />
-                    <button onClick={doExport}>Export</button>
-                </div> */}
+                    <button  style={{position:"relative", padding: "15px 32px" }} onClick={doExport}>Export</button>
+                </div>
                 <h1>Export to xlsx</h1>
                 <p>Missing 1 or more buckets</p>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
@@ -624,10 +606,10 @@ storiesOf('Geo Pushpin', module)
                             minSize: "0.5x",
                             maxSize: "1.5x"
                         },mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-                        // onExportReady={onExportReady}
+                        onExportReady = {onExportReady}
                     />
+                    <button  style={{position:"relative", padding: "15px 32px" }} onClick={doExport}>Export</button>
                 </div>
-                {/* <button style={{ padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </WorkspaceProvider>  
                 </BackendProvider>
             </div>
@@ -636,7 +618,7 @@ storiesOf('Geo Pushpin', module)
             <div style={WRAPPER_STYLE}>
                 <h1>Element Masking</h1>
                 <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
+                <WorkspaceProvider workspace={workspace}>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
                     <GeoPushpinChart
                         location={Ldm.Location0.LatlonName}
@@ -649,10 +631,6 @@ storiesOf('Geo Pushpin', module)
                             maxSize: "1.5x"
                         },
                         mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77080`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext);}}
                     />
                 </div>
                 </WorkspaceProvider>  
@@ -677,7 +655,7 @@ storiesOf('Geo Pushpin', module)
                 </BackendProvider>
             </div>
         ))
-        .add('Visualizaton', () => (
+        .add('Visualization', () => (
             <div style={WRAPPER_STYLE}>
                 <h1>No location</h1>
                 <BackendProvider backend={backend}>
@@ -799,24 +777,22 @@ storiesOf('Geo Pushpin', module)
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
                     <InsightView
                         insight={Ldm.Insights.GeoChart7}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77185`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext);}}
+                        drillableItems={[
+                            HeaderPredicates.uriMatch(LdmExt.PopulationSumUri)
+                        ]}
+                        onDrill={onDrillHandler}
                         config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-    
                     />
                 </div>
                 <h1>Drill attribute State</h1>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
                     <InsightView
                         insight={Ldm.Insights.GeoChart7}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext);}}
-                        //config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-    
+                        drillableItems={[
+                            HeaderPredicates.uriMatch(LdmExt.StateUri)
+                        ]}
+                        onDrill={onDrillHandler}
+                        config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                     />
                 </div>
                 <h1>Localization</h1>
@@ -824,8 +800,7 @@ storiesOf('Geo Pushpin', module)
                     <InsightView
                         insight={Ldm.Insights.GeoChart8}
                         locale="fr-FR"
-                        //config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-    
+                        config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                     />
                 </div>
                 <h1>Export</h1>
@@ -833,9 +808,9 @@ storiesOf('Geo Pushpin', module)
                     <InsightView
                         insight={Ldm.Insights.GeoChart7}
                         config={{ mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
-                        // onExportReady={onExportReady}
+                        onExportReady={onExportReady}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
+                    <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button>
                 </div>
                 </WorkspaceProvider>  
                 </BackendProvider>
@@ -845,7 +820,7 @@ storiesOf('Geo Pushpin', module)
             <div style={WRAPPER_STYLE}>
                 <h1>Ratio + format metric + filter, zoom minimum</h1>
                 <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
+                <WorkspaceProvider workspace={workspace}>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
                     <GeoPushpinChart
                         location={Ldm.Location0.LatlonName}
@@ -862,13 +837,7 @@ storiesOf('Geo Pushpin', module)
                             mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg"
                         }}
                         filters={[LdmExt.filterCity1Value]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 </WorkspaceProvider>  
                 </BackendProvider>
@@ -878,7 +847,7 @@ storiesOf('Geo Pushpin', module)
             <div style={WRAPPER_STYLE}>
                 <h1>POP + format metric + filter</h1>
                 <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
+                <WorkspaceProvider workspace={workspace}>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
                     <GeoPushpinChart
                         location={Ldm.Location0.LatlonName}
@@ -891,13 +860,7 @@ storiesOf('Geo Pushpin', module)
                             maxSize: "1.5x"
                         },mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                         filters={[LdmExt.filterCity1Value]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 </WorkspaceProvider>  
                 </BackendProvider>
@@ -924,13 +887,7 @@ storiesOf('Geo Pushpin', module)
                             mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg"
                         }}
                         filters={[LdmExt.filterCity]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 <h1>AM dif + format metric + filter</h1>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
@@ -945,13 +902,7 @@ storiesOf('Geo Pushpin', module)
                             maxSize: "1.5x"
                         },mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                         filters={[LdmExt.filterCity1Value]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 <h1>AM ratio + format metric + filter</h1>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
@@ -966,13 +917,7 @@ storiesOf('Geo Pushpin', module)
                             maxSize: "1.5x"
                         }, mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                         filters={[LdmExt.filterCity1Value]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 <h1>AM change + format metric + filter</h1>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
@@ -987,13 +932,7 @@ storiesOf('Geo Pushpin', module)
                             maxSize: "1.5x"
                         },mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                         filters={[LdmExt.filterCity1Value]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 <h1>AM multiplication + format metric + filter</h1>
                 <div style={{ position: "relative", height: 600, border: "solid 2px black" }}>
@@ -1008,13 +947,7 @@ storiesOf('Geo Pushpin', module)
                             maxSize: "1.5x"
                         },mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                         filters={[LdmExt.filterCity1Value]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 </WorkspaceProvider>  
                 </BackendProvider>
@@ -1038,13 +971,7 @@ storiesOf('Geo Pushpin', module)
                         },
                          mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg" }}
                         filters={[LdmExt.filterCity1Value]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77080`)
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 </WorkspaceProvider>  
                 </BackendProvider>
@@ -1073,14 +1000,7 @@ storiesOf('Geo Pushpin', module)
                             mapboxToken: "pk.eyJ1IjoiaW1udXR6IiwiYSI6ImNrMHAxY2UxZzBnc2EzZG11YmVhd2dubG0ifQ.bUTN7ceAHq6kVooe3MKgqg"
                         }}
                         //filters={[LdmExt.filterCity]}
-                        // onExportReady={onExportReady}
-                        // drillableItems={[
-                        //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/77084`)
-    
-                        // ]}
-                        // onFiredDrillEvent={(data) => {console.log(data.executionContext); console.log(data.drillContext);}}
                     />
-                    {/* <button style={{ position: "relative", padding: "15px 32px" }} onClick={doExport}>Export</button> */}
                 </div>
                 </WorkspaceProvider>  
                 </BackendProvider>

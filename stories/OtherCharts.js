@@ -16,19 +16,19 @@ const WRAPPER_STYLE = { width: 1000, height: 500 };
 storiesOf('Other Charts', module)
     .add('Headline', () => (
     <div style={WRAPPER_STYLE}>
-        <h1>(ATT)Headline only primary measure</h1>
+        <h1>Headline only primary measure</h1>
         <BackendProvider backend={backend}>
         <WorkspaceProvider workspace={workspace}>
         <Headline
             primaryMeasure={Ldm.m_ClosedBOP}
             //secondaryMeasure={[Ldm.m_ClosedEOP]}
         />
-        <h1>(ATT)Headline only secondary Measure</h1>
+        <h1>Headline only secondary Measure</h1>
         <Headline
             //primaryMeasure={[Ldm.m_ClosedBOP]}
             secondaryMeasure={Ldm.m_ClosedEOP}
         />
-        <h1>(ATT)Headline 2 measures</h1>
+        <h1>Headline 2 measures</h1>
         <Headline
             primaryMeasure={Ldm.m_ClosedBOP}
             secondaryMeasure={Ldm.m_ClosedEOP}
@@ -225,7 +225,7 @@ storiesOf('Other Charts', module)
     ))
     .add('Treemap Chart', () => (
     <div style={WRAPPER_STYLE}>
-        <h1>ATT-Treemap chart 1M,1VB,1SB</h1>
+        <h1>-Treemap chart 1M,1VB,1SB</h1>
         <BackendProvider backend={backend}>
             <WorkspaceProvider workspace={workspace}>
         <Treemap
@@ -241,7 +241,7 @@ storiesOf('Other Charts', module)
                 }
             }}
         />
-        <h1>ATT-Treemap chart 1M,1VB</h1>
+        <h1>-Treemap chart 1M,1VB</h1>
         <Treemap
             measures={[Ldm.m_ClosedBOP]}
             viewBy={Ldm.a_YearClosed}
@@ -255,7 +255,7 @@ storiesOf('Other Charts', module)
                 }
             }}
         />
-        <h1>ATT-Treemap chart 1M,1SB</h1>
+        <h1>-Treemap chart 1M,1SB</h1>
         <Treemap
             measures={[Ldm.m_ClosedBOP]}
             //viewBy={Ldm.a_YearClosed}

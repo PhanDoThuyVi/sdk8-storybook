@@ -1,6 +1,5 @@
 //author: pdtvi
 import React from 'react';
-
 import { storiesOf } from '@storybook/react';
 import '@gooddata/sdk-ui-charts/styles/css/main.css'; 
 import { BarChart, PieChart, DonutChart, Headline, ScatterPlot, BubbleChart, Treemap, Heatmap, AreaChart, LineChart, ColumnChart, ComboChart } from '@gooddata/sdk-ui-charts';
@@ -9,13 +8,19 @@ import { InsightView } from '@gooddata/sdk-ui-ext';
 import { BackendProvider } from "@gooddata/sdk-ui";
 import { WorkspaceProvider } from "@gooddata/sdk-ui";
 import bearFactory, { ContextDeferredAuthProvider } from "@gooddata/sdk-backend-bear";
-import { projectId as workspace } from "../src/constants";
+import {projectId as workspace } from "../src/constants";
 import {Ldm, LdmExt} from "../src/ldm";
+import {HeaderPredicates } from '@gooddata/sdk-ui';
 
 const backend = bearFactory().withAuthentication(new ContextDeferredAuthProvider());
 const WRAPPER_STYLE = { width: 1200, height: 400 };
 
 import { black } from 'ansi-colors';
+
+function onDrillHandler(data){
+    console.log(data.executionContext); 
+    console.log(data.drillContext);
+}
 
 storiesOf('Align-PieDonut-Chart', module)
     .add('Pie Chart', () => (
@@ -226,6 +231,12 @@ storiesOf('Align-PieDonut-Chart', module)
                     insight={Ldm.Insights.AlignPieDonutChart1}
                 />
             </div>
+            <h1>test sd-1045</h1>
+            <div style={{ width: 400, height: 800, border: "solid 2px black" }}>
+                <InsightView
+                    insight={Ldm.Insights.sd1045}
+                />
+            </div>
             <h1>Pie chart - Config on sdk, Align: bottom</h1>
             <div style={{ width: 400, height: 800, border: "solid 2px black" }}>
                 <InsightView
@@ -342,7 +353,7 @@ storiesOf('Align-PieDonut-Chart', module)
         <div style={WRAPPER_STYLE}>
             <h1>Column Chart, Align: not apply</h1>
             <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
+            <WorkspaceProvider workspace={workspace}>
             <div style={{ width: 800, height: 1200, border: "solid 2px black" }}>
                 <ColumnChart
                     measures={[LdmExt.m_SumDayToClose]}
@@ -357,10 +368,6 @@ storiesOf('Align-PieDonut-Chart', module)
                             position: 'bottom',
                         }
                     }}
-                    // drillableItems={[
-                    //     HeaderPredicateFactory.insightMatch('label.stage.name.stagename')
-                    // ]}
-                    // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
                 />
             </div>
             <h1>Bar Chart, Align: not apply</h1>
@@ -379,10 +386,10 @@ storiesOf('Align-PieDonut-Chart', module)
                             position: 'left',
                         }
                     }}
-                    // drillableItems={[
-                    //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-                    // ]}
-                    // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+                    drillableItems={[
+                        HeaderPredicates.identifierMatch('label.stage.name.stagename')
+                    ]}
+                    onDrill={onDrillHandler}
                 />
             </div>
             <h1>Line chart, Align: not apply</h1>
@@ -424,10 +431,11 @@ storiesOf('Align-PieDonut-Chart', module)
                         }
 
                     }}
-                    // drillableItems={[
-                    //     HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/1174`)
-                    // ]}
-                    // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+                    drillableItems={[
+                        HeaderPredicates.composedFromUri(LdmExt.CountStageHistoryUri),
+                        HeaderPredicates.uriMatch(LdmExt.ProductUri)
+                    ]}
+                    onDrill={onDrillHandler}
                 />
             </div>
             <h1>Combo Chart, Align: not apply</h1>

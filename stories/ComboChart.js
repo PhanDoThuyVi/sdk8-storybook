@@ -2,35 +2,41 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import '@gooddata/sdk-ui-charts/styles/css/main.css';
-import { ComboChart, HeaderPredicateFactory } from '@gooddata/sdk-ui-charts';
+import { ComboChart } from '@gooddata/sdk-ui-charts';
 import { InsightView } from '@gooddata/sdk-ui-ext';
 import { BackendProvider } from "@gooddata/sdk-ui";
 import { WorkspaceProvider } from "@gooddata/sdk-ui";
 import bearFactory, { ContextDeferredAuthProvider } from "@gooddata/sdk-backend-bear";
 import { projectId as workspace } from "../src/constants";
 import {Ldm, LdmExt} from "../src/ldm"
+import { HeaderPredicates } from "@gooddata/sdk-ui";
 
 const backend = bearFactory().withAuthentication(new ContextDeferredAuthProvider());
 const WRAPPER_STYLE = { width: 800, height: 400 };
-// const DOWNLOADER_ID = 'downloader';
+const DOWNLOADER_ID = 'downloader';
 
-// let exportResult: any;
+function onDrillHandler(data){
+    console.log(data.executionContext); 
+    console.log(data.drillContext);
+}
 
-// function onExportReady(execution: any){
-// 	exportResult = execution;
-// }
+let exportResult: any;
 
-// async function doExport(){
-// 	const result = await exportResult({
-// 		format: 'xlsx',
-// 		//title: 'CustomTitle',
-// 		includeFilterContext: true,
-// 		//showFilters: [],
-// 		mergeHeaders: true
-// 	});
-// 	//downloadFile(result.uri);
-// 	window.open(result.uri);
-// }
+function onExportReady(execution: any){
+	exportResult = execution;
+}
+
+async function doExport(){
+	const result = await exportResult({
+		format: 'xlsx',
+		//title: 'CustomTitle',
+		includeFilterContext: true,
+		//showFilters: [],
+		mergeHeaders: true
+	});
+	//downloadFile(result.uri);
+	window.open(result.uri);
+}
 
 storiesOf('ComboChart/Column-Line', module)
     .add('DualAxis+Export+Drill', () => (
@@ -40,8 +46,8 @@ storiesOf('ComboChart/Column-Line', module)
 
         <h1>Default chart type and drill by attribute value</h1>
         <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
-       <ComboChart
+        <WorkspaceProvider workspace={workspace}>
+        <ComboChart
             primaryMeasures={[Ldm.m_ClosedBOP, Ldm.m_ClosedEOP, LdmExt.m_SumDayToClose]}
             secondaryMeasures={[Ldm.m_SnapshotBOP, LdmExt.m_POP_SumDayToClose]}
             viewBy={[Ldm.a_Product, Ldm.a_StageName]}
@@ -49,14 +55,14 @@ storiesOf('ComboChart/Column-Line', module)
                 //primaryChartType: 'column',
                 //secondaryChartType: 'line'
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/949/elements?id=168279`),
-            //  ]}
-            //  onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductUri),
+             ]}
+             onDrill={onDrillHandler}
 			filters = {[LdmExt.filterProduct,LdmExt.filterStageName,LdmExt.relativeDateYear]}
-			// onExportReady = {onExportReady}
+			onExportReady = {onExportReady}
         />
-		{/* <button onClick={doExport}>Export</button> */}
+		<button onClick={doExport}>Export</button> */}
         <h1>Drill by fact and show%</h1>
         <ComboChart
             primaryMeasures={[LdmExt.m_SumDayToCloseRatio]}
@@ -66,11 +72,11 @@ storiesOf('ComboChart/Column-Line', module)
                 primaryChartType: 'column',
                 //secondaryChartType: 'line'
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`),
-            //     ]}
-            //     onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
-            //filters = {[filterProduct,LdmExt.filterStageName,relativeDate]}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.DayToCloseUri),
+                ]}
+                onDrill={onDrillHandler}
+            filters = {[LdmExt.filterProduct,LdmExt.filterStageName,LdmExt.relativeDateYear]}
         />
 
         <h1>Drill AM</h1>
@@ -82,10 +88,10 @@ storiesOf('ComboChart/Column-Line', module)
                 //primaryChartType: 'column',
                 secondaryChartType: 'line'
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/9211`),
-            //     ]}
-            //     onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.composedFromUri(LdmExt.CloseBOPUri),
+                ]}
+                onDrill={onDrillHandler}
             filters = {[LdmExt.filterProduct,LdmExt.filterStageName,LdmExt.relativeDateYear]}
         />
         
@@ -99,11 +105,11 @@ storiesOf('ComboChart/Column-Line', module)
                 secondaryChartType: 'line',
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.identifierMatch('aaeb7jTCfexV'),
-            //     ]}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('aaeb7jTCfexV'),
+                ]}
             filters = {[LdmExt.filterProduct,LdmExt.filterStageName,LdmExt.relativeDateYear]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            onDrill={onDrillHandler}
         />
 
         <h1>stack measures</h1>
@@ -233,12 +239,12 @@ storiesOf('ComboChart/Column-Line', module)
                 //primaryChartType: 'column',
                 secondaryChartType: 'column'
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/949/elements?id=168279`),
-			// 	HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/9211`),
-			// 	HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`),
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductCompuSciUri),
+				HeaderPredicates.composedFromUri(LdmExt.CloseBOPUri),
+				HeaderPredicates.uriMatch(LdmExt.DayToCloseUri),
+            ]}
+            onDrill={onDrillHandler}
             filters = {[LdmExt.filterProduct,LdmExt.filterStageName,LdmExt.relativeDateYear]}
         />
 
@@ -251,12 +257,12 @@ storiesOf('ComboChart/Column-Line', module)
                 //primaryChartType: 'column',
                 //secondaryChartType: 'line'
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/949/elements?id=168279`),
-			// 	HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/9211`),
-			// 	HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`),
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductCompuSciUri),
+				HeaderPredicates.composedFromUri(LdmExt.CloseBOPUri),
+				HeaderPredicates.uriMatch(LdmExt.DayToCloseUri),
+            ]}
+            onDrill={onDrillHandler}
             filters = {[LdmExt.filterProduct,LdmExt.filterStageName,LdmExt.relativeDateYear]}
         />
 
@@ -269,12 +275,12 @@ storiesOf('ComboChart/Column-Line', module)
                 //primaryChartType: 'column',
                 secondaryChartType: 'area'
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/949/elements?id=168279`),
-			// 	HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/9211`),
-			// 	HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`),
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductCompuSciUri),
+				HeaderPredicates.composedFromUri(LdmExt.CloseBOPUri),
+				HeaderPredicates.uriMatch(LdmExt.DayToCloseUri),,
+            ]}
+            onDrill={onDrillHandler}
             filters = {[LdmExt.filterProduct,LdmExt.filterStageName,LdmExt.relativeDateYear]}
         />
 </WorkspaceProvider>  
@@ -398,3 +404,4 @@ storiesOf('ComboChart/Column-Line', module)
     </div>
 
 ));
+

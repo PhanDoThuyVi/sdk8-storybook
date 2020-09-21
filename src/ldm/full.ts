@@ -85,5 +85,6 @@ export const Insights = {
   GeoChart6: "aaerv5m0iy8m",
   GeoChart7: "aadUg2hJghFC",
   GeoChart8: "aabBJ3S0cEN5",
-  BarChart: "aahbxqbOcWA7"
+  BarChart: "aahbxqbOcWA7",
+  sd1045:"aaqslh5gfSPu"
 };

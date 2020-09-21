@@ -3,13 +3,19 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 import '@gooddata/sdk-ui-charts/styles/css/main.css'; 
-import { AreaChart, HeaderPredicateFactory, PieChart, LineChart, ColumnChart } from '@gooddata/sdk-ui-charts';
+import { AreaChart, PieChart, LineChart, ColumnChart } from '@gooddata/sdk-ui-charts';
 import { InsightView } from '@gooddata/sdk-ui-ext';
 import { BackendProvider } from "@gooddata/sdk-ui";
 import { WorkspaceProvider } from "@gooddata/sdk-ui";
 import bearFactory, { ContextDeferredAuthProvider } from "@gooddata/sdk-backend-bear";
 import { projectId as workspace } from "../src/constants";
 import {Ldm, LdmExt} from "../src/ldm";
+import { HeaderPredicates } from '@gooddata/sdk-ui';
+
+function onDrillHandler(data){
+    console.log(data.executionContext); 
+    console.log(data.drillContext);
+}
 
 const backend = bearFactory().withAuthentication(new ContextDeferredAuthProvider());; 
 const WRAPPER_STYLE = { width: 1200, height: 400 };
@@ -42,16 +48,16 @@ storiesOf('AreaChart', module)
     .add('1M 1VB NoSB', () => (
         <div style={WRAPPER_STYLE}>
         <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
+        <WorkspaceProvider workspace={workspace}>
             <h1>No ratio, stackMeasuresToPercent, drill fact</h1>
             <AreaChart
             measures={[LdmExt.m_SumDayToClose]}
             viewBy={[Ldm.a_Product]}
            
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`),
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.DayToCloseUri),
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>No ratio, stackMeasuresToPercent, drill fact</h1>
             <p>Apply stack to percent in this case</p>
@@ -64,10 +70,10 @@ storiesOf('AreaChart', module)
                     measures:['SumDayToClose']
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`),
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.DayToCloseUri),
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasuresToPercent, drill viewby</h1>
             <AreaChart
@@ -76,10 +82,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/952`),
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductUri),
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasures, drill value attribute</h1>
             <AreaChart
@@ -88,10 +94,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasures: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/949/elements?id=168282`),
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductEducationlyUri),
+            ]}
+            onDrill={onDrillHandler}
             />
             </WorkspaceProvider>  
 </BackendProvider>
@@ -110,10 +116,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasuresToPercent, drill by viewBy</h1>
             <AreaChart
@@ -123,10 +129,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasures, drill by one value of stackBy</h1>
             <AreaChart
@@ -136,10 +142,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasures: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1095/elements?id=966644`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.StageNameDiscoveryUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             </WorkspaceProvider>  
 </BackendProvider>
@@ -157,10 +163,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasuresToPercent, drill by children</h1>
             <AreaChart
@@ -169,10 +175,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.stage.name.stagename')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.stage.name.stagename')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>NoRatio, stackMeasures, check format, drill by children</h1>
             <AreaChart
@@ -181,10 +187,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasures: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.stage.name.stagename')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.stage.name.stagename')
+            ]}
+            onDrill={onDrillHandler}
             />
             </WorkspaceProvider>  
 </BackendProvider>
@@ -203,10 +209,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.stage.name.stagename')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.stage.name.stagename')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>NoRatio, stackMeasuresToPercent, stack by child, drill by parent</h1>
             <AreaChart
@@ -216,10 +222,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasuresToPercent, stack by parent, drill by parent</h1>
             <AreaChart
@@ -229,10 +235,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasuresToPercent, stack by parent, drill by child</h1>
             <AreaChart
@@ -242,10 +248,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasuresToPercent: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.stage.name.stagename')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.stage.name.stagename')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>NoRatio, stackMeasures, stack by different, drill by StackBy</h1>
             <p>Because area will ignore SB if has more 2 VB, so can drill anything.</p>
@@ -256,10 +262,10 @@ storiesOf('AreaChart', module)
             config={{
                 stackMeasures: true
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.owner.department')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.owner.department')
+            ]}
+            onDrill={onDrillHandler}
             />
             </WorkspaceProvider>  
 </BackendProvider>
@@ -286,10 +292,10 @@ storiesOf('AreaChart', module)
                     min: 0
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1174`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.CountStageHistoryUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>More than 2 viewBy, drill by metric Open Opps</h1>
             <h3>A. Applied with 2 viewBy in the top: Product, Stage Name</h3>
@@ -307,10 +313,10 @@ storiesOf('AreaChart', module)
                     min: 0
                 }
              }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/13465`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.OpenOppsUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>B. Filter only one valule CompuSci, Interest with by all dimension</h3>
             <p>Show all points</p>
@@ -328,10 +334,10 @@ storiesOf('AreaChart', module)
                 }
             }}
             filters = {[LdmExt.filterProductCompuSci, LdmExt.filterStageNameInterest]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/13465`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.OpenOppsUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>C. Filter only one valule CompuSci, Interest with normal measure</h3>
             <p>Show one point</p>
@@ -349,10 +355,10 @@ storiesOf('AreaChart', module)
                 }
             }}
             filters = {[LdmExt.filterProductCompuSci, LdmExt.filterStageNameInterest]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/13465`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.OpenOppsUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasuresToPercent, stackMeasures, stack by parent</h1>
             <p>secondary_yaxis: min -90, max -90</p>
@@ -372,10 +378,10 @@ storiesOf('AreaChart', module)
                     max: 90
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.stage.name.stagename')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.stage.name.stagename')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>NoRatio, stackMeasures, stack by different</h1>
             <p>secondary_yaxis: min 0, max 100</p>
@@ -394,10 +400,10 @@ storiesOf('AreaChart', module)
                     max: 100
                 }
              }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>Ratio, stackMeasures, stack by different</h1>
             <h3>A. Drill by parent value CompuSci</h3>
@@ -415,10 +421,10 @@ storiesOf('AreaChart', module)
                     max: 200
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/949/elements?id=168279`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductCompuSciUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>B. Drill by child value Interest</h3>
             <AreaChart
@@ -435,10 +441,10 @@ storiesOf('AreaChart', module)
                     max: 2000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1095/elements?id=966643`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.StageNameInteresUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>C. Drill by both parent CompuSci and child value Interest</h3>
             <AreaChart
@@ -455,11 +461,11 @@ storiesOf('AreaChart', module)
                     max: 2000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/949/elements?id=168279`),
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1095/elements?id=966643`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.ProductCompuSciUri),
+                HeaderPredicates.uriMatch(LdmExt.StageNameInteresUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             </WorkspaceProvider>  
 </BackendProvider>
@@ -477,10 +483,10 @@ storiesOf('AreaChart', module)
             measures={[Ldm.m_MinPaid.Min, Ldm.m_SumSalary.Sum]}
             viewBy={[Ldm.a_StartFrom,Ldm.a_FirstName]}
             stackBy={Ldm.a_Address}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.persons.firstname')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.persons.firstname')
+            ]}
+            onDrill={onDrillHandler}
         />
         <h1>Filter some values, stacking, drill by firstName</h1>
         <p>Only show measure MinPaid with 2 VB</p>
@@ -492,10 +498,10 @@ storiesOf('AreaChart', module)
                 stacking: true
             }}
             filters={[LdmExt.filterFirstName]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.persons.firstname')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.persons.firstname')
+            ]}
+            onDrill={onDrillHandler}
         />
         <h1>Filter some values, stackMeasuresToPercent, drill by firstName</h1>
         <p>Only show measure MinPaid with 2 VB</p>
@@ -507,10 +513,10 @@ storiesOf('AreaChart', module)
                 stackMeasuresToPercent: true
             }}
             filters={[LdmExt.filterFirstName]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.persons.firstname')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.persons.firstname')
+            ]}
+            onDrill={onDrillHandler}
         />
         <h1>Filter some values, stackMeasures, drill by firstName, min/max</h1>
         <p>secondary_yaxis: min -4500, max: 8000</p>
@@ -531,10 +537,10 @@ storiesOf('AreaChart', module)
                 }
             }}
             filters={[LdmExt.filterFirstName]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.persons.firstname')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.persons.firstname')
+            ]}
+            onDrill={onDrillHandler}
         />
         <h1>Filter one value Anh</h1>
         <p>Set second measure on right axis. But because this case will ignore the second measure so insight should display MinPaid on left axis.</p>
@@ -554,10 +560,10 @@ storiesOf('AreaChart', module)
                 }
             }}
             filters={[LdmExt.filterFirstNameAnh]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.persons.firstname')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.persons.firstname')
+            ]}
+            onDrill={onDrillHandler}
         />
         <h1>2M + 1VB</h1>
         <h3>A. secondary_yaxis: min -4500, max: 8000</h3>
@@ -573,10 +579,10 @@ storiesOf('AreaChart', module)
                 }
             }}
             filters={[LdmExt.filterFirstNameAnh]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('fact.persons.paid')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('fact.persons.paid')
+            ]}
+            onDrill={onDrillHandler}
         />
         <h3>B. stackMeasuresToPercent on left axis</h3>
         <p>Applied stackMeasuresToPercent</p>
@@ -587,10 +593,10 @@ storiesOf('AreaChart', module)
                 stackMeasuresToPercent: true
             }}
             filters={[LdmExt.filterFirstNameAnh]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('fact.persons.paid')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('fact.persons.paid')
+            ]}
+            onDrill={onDrillHandler}
         />
         <h3>C. stackMeasures on left axis</h3>
         <p>Applied stackMeasures</p>
@@ -601,10 +607,10 @@ storiesOf('AreaChart', module)
                 stackMeasures: true
             }}
             filters={[LdmExt.filterFirstNameAnh]}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('fact.persons.paid')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('fact.persons.paid')
+            ]}
+            onDrill={onDrillHandler}
         />
         </WorkspaceProvider>  
 </BackendProvider>
@@ -627,10 +633,10 @@ storiesOf('AreaChart', module)
                     min: 0
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/1174`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.composedFromUri(LdmExt.CountStageHistoryUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>B. stackMeasures, drill fact OpenOpps, visible secondary_yaxis</h3>
             <p>Hidden right y-axis, but apply stacked</p>
@@ -645,10 +651,10 @@ storiesOf('AreaChart', module)
                     visible: false
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/13465`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.composedFromUri(LdmExt.OpenOppsUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>C. stackMeasuresToPercent, drill stage history, labelsEnabled secondary_yaxis</h3>
             <p>Hidden right y-axis but apply stacked and show title of measures (if right y-axis has only one measure)</p>
@@ -663,10 +669,10 @@ storiesOf('AreaChart', module)
                     labelsEnabled: false
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.composedFromUri(`/gdc/md/${Ldm.projectId}/obj/1174`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.composedFromUri(LdmExt.CountStageHistoryUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             
             <h1>POP Measure</h1>
@@ -686,10 +692,10 @@ storiesOf('AreaChart', module)
                     max: 2000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.DayToCloseUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>B. Filter relative by week_us, stackMeasuresToPercent, drill by fact</h3>
             <AreaChart
@@ -707,10 +713,10 @@ storiesOf('AreaChart', module)
                     max: 2000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.DayToCloseUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h1>PP Measure</h1>
             <h3>A. Absolute Date, stackMeasures, drill by fact</h3>
@@ -729,10 +735,10 @@ storiesOf('AreaChart', module)
                     max: 2000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.DayToCloseUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>B. Absolute Date, stackMeasuresToPercent, drill by fact</h3>
             <AreaChart
@@ -750,10 +756,10 @@ storiesOf('AreaChart', module)
                     max: 2000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1146`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.DayToCloseUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             </WorkspaceProvider>  
 </BackendProvider>
@@ -781,10 +787,10 @@ storiesOf('AreaChart', module)
                     max: 1000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.uriMatch(`/gdc/md/${Ldm.projectId}/obj/1174`)
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.uriMatch(LdmExt.CountStageHistoryUri)
+            ]}
+            onDrill={onDrillHandler}
             />
             <h3>B. Ratio, stackMeasuresToPercent, stackMeasures, stacked by parent</h3>
             <AreaChart
@@ -803,10 +809,10 @@ storiesOf('AreaChart', module)
                     max: 1000
                 }
             }}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.stage.name.stagename')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.stage.name.stagename')
+            ]}
+            onDrill={onDrillHandler}
             />
             
             <h1>No data insight</h1>
@@ -843,20 +849,20 @@ storiesOf('AreaChart', module)
             <p>Insight: <a href="https://staging3.intgdc.com/analyze/#/juobzgs3d6afugtvyp66t537io1uw15f/75553/edit">Area-Stack% - do not delete</a></p>
             <InsightView
             insight={Ldm.Insights.AreaChart1}
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             <p>B. Locale fr-FR, Drill by child</p>
             <p>Insight: <a href="https://staging3.intgdc.com/analyze/#/juobzgs3d6afugtvyp66t537io1uw15f/75553/edit">Area-Stack% - do not delete</a></p>
             <InsightView
             insight={Ldm.Insights.AreaChart1}
             locale="fr-FR"
-            // drillableItems={[
-            //     HeaderPredicateFactory.insightMatch('label.product.id.name')
-            // ]}
-            // onFiredDrillEvent={(data) => { console.log(data.executionContext); console.log(data.drillContext); }}
+            drillableItems={[
+                HeaderPredicates.identifierMatch('label.product.id.name')
+            ]}
+            onDrill={onDrillHandler}
             />
             </WorkspaceProvider>  
             </BackendProvider>

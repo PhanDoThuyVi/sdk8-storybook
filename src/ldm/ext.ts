@@ -17,6 +17,23 @@ import * as Ldm from "./full";
 import { newPositiveAttributeFilter, newNegativeAttributeFilter, newAbsoluteDateFilter, newRelativeDateFilter, ITotal, attributeIdentifier, measureIdentifier, newAttributeSort, newMeasureSort,  }
 from '@gooddata/sdk-model';
 
+///URI
+export const CountStageHistoryUri= `/gdc/md/${workspace}/obj/1174`;
+export const ProductUri =`/gdc/md/${workspace}/obj/952`;
+export const ProductEducationlyUri =`/gdc/md/${workspace}/obj/949/elements?id=168282`;
+export const ProductCompuSciUri =`/gdc/md/${workspace}/obj/949/elements?id=168279`;
+export const StageNameDiscoveryUri =`/gdc/md/${workspace}/obj/1095/elements?id=966644`;
+export const StageNameInterestUri =`/gdc/md/${workspace}/obj/1095/elements?id=966643`;
+export const PopulationSumUri =`/gdc/md/${workspace}/obj/77185`;
+export const StateUri =`/gdc/md/${workspace}/obj/77084`;
+export const DayToCloseUri =`/gdc/md/${workspace}/obj/1146`;
+export const OpenOppsUri =`/gdc/md/${workspace}/obj/13465`;
+export const AmountBOPUri =`/gdc/md/${workspace}/obj/2858`;
+export const AvgAmountUri =`/gdc/md/${workspace}/obj/62827`;
+export const AmountUri =`/gdc/md/${workspace}/obj/1279`;
+export const StageNameUri =`/gdc/md/${workspace}/obj/1805`;
+export const CloseBOPUri =`/gdc/md/${workspace}/obj/9211`;
+
 export const dateSnapshotDatasetIdentifier = "snapshot.dataset.dt";
 export const dateClosedDatasetIdentifier = "closed.dataset.dt";
 export const dateClosedYearIdentifier = "closed.year";

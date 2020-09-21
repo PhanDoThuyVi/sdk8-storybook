@@ -1,34 +1,36 @@
 import React from "react";
-
 import { storiesOf } from "@storybook/react";
 import '@gooddata/sdk-ui-charts/styles/css/main.css'; 
-import {
-    BulletChart
-} from "@gooddata/sdk-ui-charts";
+import { BulletChart} from "@gooddata/sdk-ui-charts";
 import { InsightView } from '@gooddata/sdk-ui-ext';
 import { BackendProvider } from "@gooddata/sdk-ui";
 import { WorkspaceProvider } from "@gooddata/sdk-ui";
 import bearFactory, { ContextDeferredAuthProvider } from "@gooddata/sdk-backend-bear";
 import { projectId as workspace } from "../src/constants";
 import {Ldm, LdmExt} from "../src/ldm";
+import { HeaderPredicates } from "@gooddata/sdk-ui";
 
 const backend = bearFactory().withAuthentication(new ContextDeferredAuthProvider());
-
 const WRAPPER_STYLE = { width: 1200, height: 400 };
-// let exportResult: any;
+let exportResult: any;
 
-// function onExportReady(execution: any) {
-//     exportResult = execution;
-// }
+function onExportReady(execution: any) {
+    exportResult = execution;
+}
 
-// async function doExport() {
-//     const result = await exportResult({
-//         format: "xlsx",
-//         includeFilterContext: true,
-//         mergeHeaders: true,
-//     });
-//     window.open(result.uri);
-// }
+function onDrillHandler(data){
+    console.log(data.executionContext); 
+    console.log(data.drillContext);
+}
+
+async function doExport() {
+    const result = await exportResult({
+        format: "xlsx",
+        includeFilterContext: true,
+        mergeHeaders: true,
+    });
+    window.open(result.uri);
+}
 
 storiesOf("Bullet Chart", module)
     .add("Basic bullet chart", () => (
@@ -444,35 +446,24 @@ storiesOf("Bullet Chart", module)
             <h1>Drill event on bullet chart</h1>
             <p>drill Amount, Amount[BOP], Avg.Amount, StageName</p>
             <BackendProvider backend={backend}>
-<WorkspaceProvider workspace={workspace}>
+            <WorkspaceProvider workspace={workspace}>
             <div style={{ height: 600, border: "solid 2px black" }}>
                 <BulletChart
                     primaryMeasure={Ldm.m_AmountBOP}
                     targetMeasure={Ldm.m_AvgAmount}
                     comparativeMeasure={Ldm.m_Amount}
-                    viewBy={[Ldm.a_StageName, Ldm.a_Product]}
-                    // drillableItems={[
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/2858`
-                    //     ),
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/62827`
-                    //     ),
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/1279`
-                    //     ),
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/1805`
-                    //     ),
-                    // ]}
-                    // onFiredDrillEvent={(data) => {
-                    //     console.log(data.executionContext);
-                    //     console.log(data.drillContext);
-                    // }}
+                    viewBy={[Ldm.a_StageName]}
+                    drillableItems={[
+                        HeaderPredicates.uriMatch(LdmExt.AmountBOPUri),
+                        HeaderPredicates.uriMatch(LdmExt.AvgAmountUri),
+                        HeaderPredicates.uriMatch(LdmExt.AmountUri),
+                        HeaderPredicates.uriMatch(LdmExt.StageNameUri),
+                    ]}
+                    onDrill={onDrillHandler}
                 />
             </div>
             </WorkspaceProvider>  
-</BackendProvider>
+            </BackendProvider>
         </div>
     ))
     .add("Export", () => (
@@ -491,9 +482,9 @@ storiesOf("Bullet Chart", module)
                         LdmExt.relativeYearSnapshot,
                         LdmExt.filterAmount_NotBetween,
                     ]}
-                    // onExportReady={onExportReady}
+                    onExportReady={onExportReady}
                 />
-                {/* <button onClick={doExport}>Export</button> */}
+                <button onClick={doExport}>Export</button> */}
             </div>
             </WorkspaceProvider>  
 </BackendProvider>
@@ -612,33 +603,22 @@ storiesOf("Bullet Chart", module)
                         //     }
                         // }
                     ]}
-                    // onExportReady={onExportReady}
+                    onExportReady={onExportReady}
                 />
-                {/* <button onClick={doExport}>Export</button> */}
+                <button onClick={doExport}>Export</button> */}
             </div>
             <h1>Drill event on bullet chart</h1>
             <p>drill Amount, Amount[BOP], Avg.Amount, StageName</p>
             <div style={{ height: 600, border: "solid 2px black" }}>
                 <InsightView
                     insight={Ldm.Insights.BulletChart1}
-                    // drillableItems={[
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/2858`
-                    //     ),
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/62827`
-                    //     ),
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/1279`
-                    //     ),
-                    //     HeaderPredicateFactory.uriMatch(
-                    //         `/gdc/md/${Ldm.projectId}/obj/1805`
-                    //     ),
-                    // ]}
-                    // onFiredDrillEvent={(data) => {
-                    //     console.log(data.executionContext);
-                    //     console.log(data.drillContext);
-                    //}}
+                    drillableItems={[
+                        HeaderPredicates.uriMatch(HeaderPredicates.uriMatch(LdmExt.AmountBOPUri)),
+                        HeaderPredicates.uriMatch(HeaderPredicates.uriMatch(LdmExt.AvgAmountUri)),
+                        HeaderPredicates.uriMatch(HeaderPredicates.uriMatch(LdmExt.AmountUri) ),
+                        HeaderPredicates.uriMatch(HeaderPredicates.uriMatch(LdmExt.StageNameUri)),
+                    ]}
+                    onDrill={onDrillHandler}
                 />
             </div>
             <h1>Localization bullet chart</h1>

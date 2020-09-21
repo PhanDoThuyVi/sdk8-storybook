@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import '@gooddata/sdk-ui-ext/styles/css/insightView.css';
 import { InsightView } from '@gooddata/sdk-ui-ext';
 import { BackendProvider } from "@gooddata/sdk-ui";
 import { WorkspaceProvider } from "@gooddata/sdk-ui";
